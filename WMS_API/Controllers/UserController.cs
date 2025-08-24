@@ -56,6 +56,14 @@ namespace WEB_API.Controllers
             return Ok(newUser);
         }
 
+        [AllowAnonymous]
+        [HttpPost("Role")]
+        public async Task<ActionResult> AddRole([FromBody] RoleDTO dto)
+        {
+            var newRole = await _userServices.AddRole(dto);
+            return Ok(newRole);
+        }
+
 
 
 

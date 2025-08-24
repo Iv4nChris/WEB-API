@@ -15,7 +15,6 @@ namespace WMS_API.Models
 
 
         public Roles Role { get; set; }
-        public ICollection<Accounts> Account { get; set; } = new List<Accounts>();
         
     }
 }

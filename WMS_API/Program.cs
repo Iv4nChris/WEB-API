@@ -19,6 +19,7 @@ var database = Environment.GetEnvironmentVariable("Db__Database") ?? "test";
 
 // Build connection string
 var connectionString = $"Server={server};Database={database};User Id={user};Password={password};Encrypt=False;TrustServerCertificate=True;";
+var connectionStringEnv = $"Server=localhost\\SQLEXPRESS;Database={database};Trusted_Connection=True;TrustServerCertificate=True; MultipleActiveResultSets=true;";
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,7 +28,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-options.UseSqlServer(connectionString));
+options.UseSqlServer(connectionStringEnv));
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddEndpointsApiExplorer();

@@ -17,7 +17,14 @@ namespace WMS_API.Data
         public DbSet<Accounts> Accounts {  get; set; }
         public DbSet<ResetPasswordLink> ResetPasswordLinks { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
 
-        
+            // Optional if you use Fluent API to define keys
+            modelBuilder.Entity<Accounts>().HasKey(a => a.UsersId);
+            modelBuilder.Entity<Users>().HasKey(u => u.Id);
+        }
+
     }
 }

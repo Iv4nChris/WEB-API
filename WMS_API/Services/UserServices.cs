@@ -29,6 +29,20 @@ namespace WEB_API.Services
             _passwordHasher = passwordHasher;
         }
 
+        #region -- add role --
+        public async Task<RoleDTO> AddRole(RoleDTO roleDto)
+        {
+            var role = new Roles
+            {
+                Name = roleDto.RoleName
+            };
+            _context.Roles.Add(role);
+            await _context.SaveChangesAsync();
+            roleDto.Id = role.Id; // Assign the generated Id back to the DTO
+            return roleDto;
+        }
+        #endregion
+
         #region -- Get All Users --
         public async Task<List<UserDTO>> GetAllUsers()
         {
