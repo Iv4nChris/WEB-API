@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using WEB_API.DTOs.Login;
 using WEB_API.Services;
 
@@ -20,6 +22,32 @@ namespace WEB_API.Controllers
             _userServices = userServices;
             _emailServices = emailServices;
         }
+
+
+        [HttpGet("me")]
+        public IActionResult GetCurrentUser()
+        {
+
+            /*
+             ⚡ Important:
+             - If the token is expired, this method will NOT run.
+             - ASP.NET Core checks the JWT before it gets here.
+             - If expired or invalid → the framework automatically returns 401 Unauthorized.
+             */
+
+            // userId is a custom claim, so it works fine
+            var userId = User.FindFirst("userId")?.Value;
+
+            // username is stored in "sub" (subject).
+            // Depending on claim mapping, try "sub" or NameIdentifier
+            var username = User.FindFirst("sub")?.Value
+                           ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            return Ok(new { UserId = userId, Username = username });
+        }
+
+
+
 
         #region -- Login --
         [AllowAnonymous]

@@ -39,7 +39,8 @@ builder.Services.AddOpenApi();
 This enables authentication services in your app using JWT Bearer tokens.
 The scheme is set to JWT Bearer, meaning the app expects incoming tokens in the Authorization header with the prefix Bearer.
  */
-var jwtKey = Environment.GetEnvironmentVariable("Jwt__Key");
+var jwtKey = Environment.GetEnvironmentVariable("Jwt__Key")
+    ?? throw new InvalidOperationException("JWT key not found in environment variables");
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

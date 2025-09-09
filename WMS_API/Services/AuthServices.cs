@@ -29,42 +29,56 @@ namespace WEB_API.Services
         #region -- Login Process --
         public async Task<ResponseLoginDTO> Login(RequestLoginDTO loginDto)
         {
-            var user = await _context.Accounts.FirstOrDefaultAsync(account => account.UserName == loginDto.Username);
-            if (user == null)
+            try
             {
-                //User not found
+
+
+                var user = await _context.Accounts.FirstOrDefaultAsync(account => account.UserName == loginDto.Username);
+                if (user == null)
+                {
+                    //User not found
+                    return new ResponseLoginDTO
+                    {
+                        Success = false,
+                        Message = "Username not found!"
+                    };
+                }
+
+                //found
+                // Hash password (during registration)
+                string hashedPassword = BCrypt.Net.BCrypt.HashPassword(loginDto.Password);
+
+                // Verify password (during login)
+                bool isValid = BCrypt.Net.BCrypt.Verify(loginDto.Password, hashedPassword);
+                if (!isValid)
+                {
+                    //Incorrect Password
+                    return new ResponseLoginDTO
+                    {
+                        Success = false,
+                        Message = "Invalid Password!"
+                    };
+                }
+
+                // Generate JWT
+                var token = GenerateJwtToken(user);
+
+                return new ResponseLoginDTO
+                {
+                    Success = true,
+                    Message = "Login successful",
+                    Token = token
+                };
+
+            }
+            catch (Exception ex)
+            {
                 return new ResponseLoginDTO
                 {
                     Success = false,
-                    Message = "Username not found!"
+                    Message = ex.Message
                 };
             }
-
-            //found
-            // Hash password (during registration)
-            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(loginDto.Password);
-
-            // Verify password (during login)
-            bool isValid = BCrypt.Net.BCrypt.Verify(loginDto.Password, hashedPassword);
-            if (!isValid)
-            {
-                //Incorrect Password
-                return new ResponseLoginDTO
-                {
-                    Success = false,
-                    Message = "Invalid Password!"
-                };
-            }
-
-            // Generate JWT
-            var token = GenerateJwtToken(user);
-
-            return new ResponseLoginDTO
-            {
-                Success = true,
-                Message = "Login successful",
-                Token = token
-            };
         }
 
         #endregion
@@ -73,6 +87,9 @@ namespace WEB_API.Services
         #region -- generate Token JWT --
         private string GenerateJwtToken(Accounts accounts)
         {
+            var jwtKey = Environment.GetEnvironmentVariable("Jwt__Key")
+             ?? throw new InvalidOperationException("JWT key not found");
+
             /*
              Claims are pieces of information embedded inside the token about the user.
              -- JwtRegisteredClaimNames.Sub (subject) stores the user’s username.
@@ -90,7 +107,10 @@ namespace WEB_API.Services
              -- Converts it into a symmetric security key.
              -- Creates signing credentials using HMAC-SHA256 algorithm — this means the token will be signed with your secret key to ensure it can’t be tampered with.
              */
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+            //var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+            //var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             /*
