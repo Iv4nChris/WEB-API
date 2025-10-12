@@ -39,5 +39,36 @@ namespace WEB_API.Services
             return dto;
         }
         #endregion
+
+        #region -- Add Food and Drinks --
+        public async Task<AddFoodDTO> AddFood(AddFoodDTO dto)
+        {
+            var food = new Foods
+            {
+                FoodCategoriesId = dto.CategoryId,
+                FoodName = dto.FoodName,
+                FoodDescription = dto.FoodDescription
+            };
+
+            _context.Foods.Add(food);
+            await _context.SaveChangesAsync();
+            return dto;
+        }
+        #endregion
+
+        #region -- Assign Food to Package --
+        public async Task<AssignFoodToPackageDTO> AddMenu(AssignFoodToPackageDTO dto)
+        {
+            var newMenu = new FoodMenu
+            {
+                FoodPackageId = dto.PackageId,
+                FoodsId = dto.FoodsId
+            };
+            _context.FoodMenus.Add(newMenu);
+            await _context.SaveChangesAsync();
+            return dto;
+        }
+        #endregion
+
     }
 }

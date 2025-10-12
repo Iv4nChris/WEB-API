@@ -31,7 +31,6 @@ namespace WEB_API.Controllers
             return Ok(newPackage);
         }
 
-        [AllowAnonymous]
         [HttpPost("AddCategory")]
         public async Task<ActionResult> AddFoodCategory([FromBody] AddCategoryDTO dto)
         {
@@ -41,6 +40,29 @@ namespace WEB_API.Controllers
                 return BadRequest("Failed to add food category");
             }
             return Ok(newCategory);
+        }
+
+        [HttpPost("AddFood")]
+        public async Task<ActionResult> AddFood([FromBody] AddFoodDTO dto)
+        {
+            var newFood = await _foodsServices.AddFood(dto);
+            if (newFood == null)
+            {
+                return BadRequest("Failed to add food");
+            }
+            return Ok(newFood);
+        }
+
+        
+        [HttpPost("AssignFoodToPackage")]
+        public async Task<ActionResult> AddMenu([FromBody] AssignFoodToPackageDTO dto)
+        {
+            var newMenu = await _foodsServices.AddMenu(dto);
+            if (newMenu == null)
+            {
+                return BadRequest("Failed to assign food to package");
+            }
+            return Ok(newMenu);
         }
     }
 }
