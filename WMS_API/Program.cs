@@ -19,7 +19,7 @@ var database = Environment.GetEnvironmentVariable("Db__Database") ?? "test";
 
 // Build connection string
 var connectionString = $"Server={server};Database={database};User Id={user};Password={password};Encrypt=False;TrustServerCertificate=True;";
-var connectionStringEnv = $"Server=localhost\\SQLEXPRESS;Database={database};Trusted_Connection=True;TrustServerCertificate=True; MultipleActiveResultSets=true;";
+var connectionStringEnv = $"Server=DESKTOP-8HHJ5SL\\SQLEXPRESS;Database={database};Trusted_Connection=True;TrustServerCertificate=True; MultipleActiveResultSets=true;";
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -77,6 +77,7 @@ builder.Services.AddScoped<IPasswordHasher<Accounts>, PasswordHasher<Accounts>>(
 builder.Services.AddScoped<UserServices>();
 builder.Services.AddScoped<AuthServices>();
 builder.Services.AddScoped<EmailServices>();
+builder.Services.AddScoped<FoodsServices>();
 
 var app = builder.Build();
 

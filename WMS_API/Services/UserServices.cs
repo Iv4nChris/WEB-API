@@ -192,10 +192,6 @@ namespace WEB_API.Services
                 LastName = x.LastName,
                 Address = x.Address,
             }).FirstOrDefaultAsync(x => x.Email == email);
-            if (user == null)
-            {
-                return null;
-            }
 
             return user;
         }

@@ -17,6 +17,12 @@ namespace WMS_API.Data
         public DbSet<Accounts> Accounts {  get; set; }
         public DbSet<ResetPasswordLink> ResetPasswordLinks { get; set; }
 
+        // Foods Table 
+        public DbSet<Foods> Foods { get; set; }
+        public DbSet<FoodCategories> FoodCategories { get; set; }
+        public DbSet<FoodPackage> FoodPackages { get; set; }
+        public DbSet<FoodMenu> FoodMenus { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
