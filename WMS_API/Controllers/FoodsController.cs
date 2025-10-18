@@ -31,6 +31,7 @@ namespace WEB_API.Controllers
             return Ok(newPackage);
         }
 
+        [AllowAnonymous]
         [HttpPost("AddCategory")]
         public async Task<ActionResult> AddFoodCategory([FromBody] AddCategoryDTO dto)
         {
@@ -53,7 +54,7 @@ namespace WEB_API.Controllers
             return Ok(newFood);
         }
 
-        
+        [AllowAnonymous]
         [HttpPost("AssignFoodToPackage")]
         public async Task<ActionResult> AddMenu([FromBody] AssignFoodToPackageDTO dto)
         {
@@ -63,6 +64,20 @@ namespace WEB_API.Controllers
                 return BadRequest("Failed to assign food to package");
             }
             return Ok(newMenu);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("GetPackages")]
+        public async Task<ActionResult<List<GetPackagesDTO>>> GetPackages()
+        {
+            var PackageList = await _foodsServices.GetPackages();
+            if(PackageList == null)
+            {
+                return BadRequest("Empty Package");
+            }
+
+            return Ok(PackageList);
+
         }
     }
 }

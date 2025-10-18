@@ -1,4 +1,5 @@
-﻿using WEB_API.DTOs.Foods;
+﻿using Microsoft.EntityFrameworkCore;
+using WEB_API.DTOs.Foods;
 using WEB_API.Models;
 using WMS_API.Data;
 
@@ -69,6 +70,47 @@ namespace WEB_API.Services
             return dto;
         }
         #endregion
+
+        #region -- Get All Package in Menu --
+        public async Task<List<GetPackagesDTO>> GetPackages()
+        {
+            var packages = await _context.FoodPackages.GroupJoin(
+                _context.FoodMenus,
+                package => package.FoodPackageId,
+                menu => menu.FoodPackageId,
+                (package, menu) => new GetPackagesDTO
+                {
+                    FoodPackageId = package.FoodPackageId,
+                    PackageName = package.PackageName,
+                    PackageDescription = package.PackageDescription,
+                    PackagePrice = package.PackagePrice,
+                    Foods = menu.Join(_context.Foods,
+                         menu => menu.FoodsId,
+                         food => food.FoodsId,
+                         (menu, food) => new FoodsDTO
+                         {
+                             FoodID = food.FoodsId,
+                             FoodName = food.FoodName,
+                             FoodDescription = food.FoodDescription
+                         }
+                    ).ToList()
+                }
+            ).ToListAsync();
+
+            return packages;
+        }
+        #endregion
+
+        #region -- Save the selected order
+      
+        #endregion
+
+
+
+        #region -- Get the order of the customer --
+        #endregion
+
+
 
     }
 }

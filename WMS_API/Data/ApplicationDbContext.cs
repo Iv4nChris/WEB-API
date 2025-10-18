@@ -22,7 +22,7 @@ namespace WMS_API.Data
         public DbSet<FoodCategories> FoodCategories { get; set; }
         public DbSet<FoodPackage> FoodPackages { get; set; }
         public DbSet<FoodMenu> FoodMenus { get; set; }
-
+        public DbSet<Orders> Orders { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

@@ -9,6 +9,7 @@ namespace WEB_API.Models
         public int FoodCategoriesId { get; set; }
         public string FoodName { get; set; } = string.Empty;
         public string FoodDescription { get; set; } = string.Empty;
+        public decimal FoodPrice { get; set; }
         public bool IsAvailable { get; set; } = true;
 
         public FoodCategories FoodCategories { get; set; }
