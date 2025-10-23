@@ -1,7 +1,8 @@
 ﻿namespace WEB_API.DTOs.Foods
 {
-    public class AddCategoryDTO
+    public class CategoryDTO
     {
+        public int? Id { get; set; }
         public string Title { get; set; } = string.Empty;
     }
 }

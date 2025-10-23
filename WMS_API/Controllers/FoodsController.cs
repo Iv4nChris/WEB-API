@@ -20,6 +20,19 @@ namespace WEB_API.Controllers
             _foodsServices = foodsServices;
         }
 
+        #region -- Package Method --
+        [AllowAnonymous]
+        [HttpGet("GetPackages")]
+        public async Task<ActionResult<List<GetPackagesDTO>>> GetPackages()
+        {
+            var packageList = await _foodsServices.GetPackages();
+            if (packageList == null)
+            {
+                return NotFound();
+            }
+            return Ok(packageList);
+        }
+
         [HttpPost("AddPackage")]
         public async Task<ActionResult> AddFoodPackage([FromBody] AddPackageDTO dto)
         {
@@ -31,9 +44,25 @@ namespace WEB_API.Controllers
             return Ok(newPackage);
         }
 
+        #endregion
+
+        #region -- Category Method --
+
+        [AllowAnonymous]
+        [HttpGet("GetCategory")]
+        public async Task<ActionResult<List<CategoryDTO>>> GetCategories()
+        {
+            var CategoryList = await _foodsServices.GetCategories();
+            if (CategoryList == null)
+            {
+                return NotFound();
+            }
+            return Ok(CategoryList);
+        }
+
         [AllowAnonymous]
         [HttpPost("AddCategory")]
-        public async Task<ActionResult> AddFoodCategory([FromBody] AddCategoryDTO dto)
+        public async Task<ActionResult> AddFoodCategory([FromBody] CategoryDTO dto)
         {
             var newCategory = await _foodsServices.AddCategory(dto);
             if (newCategory == null)
@@ -41,6 +70,23 @@ namespace WEB_API.Controllers
                 return BadRequest("Failed to add food category");
             }
             return Ok(newCategory);
+        }
+
+        #endregion
+
+        #region -- Food Method --
+
+        [AllowAnonymous]
+        [HttpGet("GetFoods")]
+        public async Task<ActionResult<List<FoodsDTO>>> GetFoods()
+        {
+            var FoodList = await _foodsServices.GetFoods();
+            if (FoodList == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(FoodList);
         }
 
         [HttpPost("AddFood")]
@@ -54,7 +100,9 @@ namespace WEB_API.Controllers
             return Ok(newFood);
         }
 
-        [AllowAnonymous]
+        #endregion
+
+        #region -- Menu Method --
         [HttpPost("AssignFoodToPackage")]
         public async Task<ActionResult> AddMenu([FromBody] AssignFoodToPackageDTO dto)
         {
@@ -66,11 +114,10 @@ namespace WEB_API.Controllers
             return Ok(newMenu);
         }
 
-        [AllowAnonymous]
-        [HttpGet("GetPackages")]
-        public async Task<ActionResult<List<GetPackagesDTO>>> GetPackages()
+        [HttpGet("GetMenu")]
+        public async Task<ActionResult<List<GetMenuDTO>>> GetPackageMenu()
         {
-            var PackageList = await _foodsServices.GetPackages();
+            var PackageList = await _foodsServices.GetMenu();
             if(PackageList == null)
             {
                 return BadRequest("Empty Package");
@@ -79,5 +126,10 @@ namespace WEB_API.Controllers
             return Ok(PackageList);
 
         }
+
+        #endregion
+
+
+
     }
 }

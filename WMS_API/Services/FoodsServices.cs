@@ -29,7 +29,7 @@ namespace WEB_API.Services
         #endregion
 
         #region -- Add Category --
-        public async Task<AddCategoryDTO> AddCategory(AddCategoryDTO dto)
+        public async Task<CategoryDTO> AddCategory(CategoryDTO dto)
         {
             var category = new FoodCategories
             {
@@ -71,14 +71,54 @@ namespace WEB_API.Services
         }
         #endregion
 
-        #region -- Get All Package in Menu --
+
+        #region -- Get Category --
+        public async Task<List<CategoryDTO>> GetCategories()
+        {
+            return await _context.FoodCategories.Select(cat => new CategoryDTO
+            {
+                Id = cat.FoodCategoriesId,
+                Title = cat.CategoryName
+            }).ToListAsync();
+        }
+        #endregion
+
+        #region -- Get Foods --
+        public async Task<List<FoodsDTO>> GetFoods()
+        {
+            return await _context.Foods.Select(food => new FoodsDTO
+            {
+                FoodID = food.FoodsId,
+                CategoryId = food.FoodCategoriesId,
+                FoodName = food.FoodName,
+                FoodDescription = food.FoodDescription,
+                FoodPrice = food.FoodPrice
+            }).ToListAsync();
+        }
+        #endregion
+
+        #region -- Get Packages --
         public async Task<List<GetPackagesDTO>> GetPackages()
+        {
+            return await _context.FoodPackages.Select(package => new GetPackagesDTO
+            {
+                Id = package.FoodPackageId,
+                PackageName = package.PackageName,
+                PackageDescription = package.PackageDescription,
+                PackagePrice = package.PackagePrice
+
+            }).ToListAsync();
+        }
+        #endregion
+
+        #region -- Get All Package in Menu --
+        public async Task<List<GetMenuDTO>> GetMenu()
         {
             var packages = await _context.FoodPackages.GroupJoin(
                 _context.FoodMenus,
                 package => package.FoodPackageId,
                 menu => menu.FoodPackageId,
-                (package, menu) => new GetPackagesDTO
+                (package, menu) => new GetMenuDTO
                 {
                     FoodPackageId = package.FoodPackageId,
                     PackageName = package.PackageName,
@@ -91,7 +131,8 @@ namespace WEB_API.Services
                          {
                              FoodID = food.FoodsId,
                              FoodName = food.FoodName,
-                             FoodDescription = food.FoodDescription
+                             FoodDescription = food.FoodDescription,
+                             CategoryId = food.FoodCategoriesId
                          }
                     ).ToList()
                 }
@@ -102,7 +143,7 @@ namespace WEB_API.Services
         #endregion
 
         #region -- Save the selected order
-      
+        
         #endregion
 
 
