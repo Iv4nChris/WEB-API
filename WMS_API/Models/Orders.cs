@@ -11,8 +11,7 @@ namespace WEB_API.Models
         public int? FoodId { get; set; }
         public int Order { get; set; } = 1;
         public DateTime CreatedDate { get; set; } = DateTime.Now;
-        public bool IsDelivered { get; set; }
-
+        public bool IsDelivered { get; set; } = false;
         [ForeignKey("UserId")]
         public required Users User { get; set; }
 

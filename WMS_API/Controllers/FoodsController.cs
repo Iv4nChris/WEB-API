@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using MailKit.Search;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using WEB_API.Services;
-using WEB_API.DTOs;
-using WEB_API.Models;
-using WEB_API.DTOs.Foods;
 using Org.BouncyCastle.Asn1.Crmf;
+using WEB_API.DTOs;
+using WEB_API.DTOs.Foods;
+using WEB_API.Models;
+using WEB_API.Services;
 
 namespace WEB_API.Controllers
 {
@@ -129,6 +130,35 @@ namespace WEB_API.Controllers
 
         #endregion
 
+        #region -- Orders Method --
+        [AllowAnonymous]
+        [HttpPost("CreateFoodOrder")]
+        public async Task<ActionResult> CreateFoodOrder([FromBody] OrderDTO dto)
+        {
+            var newOrder = await _foodsServices.SaveOrder(dto);
+            if (newOrder == null)
+            {
+                return BadRequest("Failed to create food order");
+            }
+            return Ok(newOrder);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("GetFoodOrders/{userid}")]
+        public async Task<ActionResult<List<GetOrdersDTO>>> GetFoodOrders(int userid)
+        {
+            var OrderList = await _foodsServices.GetOrder(userid);
+            if (OrderList == null)
+            {
+                return StatusCode(500, "Error retrieving orders!");
+            }
+
+            if (!OrderList.Any())
+                return Ok(new List<GetOrdersDTO>());
+
+            return Ok(OrderList);
+        }
+        #endregion
 
 
     }

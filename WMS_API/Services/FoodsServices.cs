@@ -142,13 +142,66 @@ namespace WEB_API.Services
         }
         #endregion
 
-        #region -- Save the selected order
-        
+        #region -- Save the selected order || Add to Cart --
+        public async Task<OrderDTO> SaveOrder(OrderDTO dto)
+        {
+            var user = await _context.Users.FindAsync(dto.UserId);
+            if (user == null)
+            {
+                throw new ArgumentException("Invalid UserId");
+            }
+            //TODO
+            //check package and food is the same value in the existing order
+            //Update the qty/order base on the input 
+            var order = new Orders
+            {
+                UserId = dto.UserId,
+                FoodPackageId = dto.FoodPackageId,
+                FoodId = dto.FoodId,
+                Order = dto.Order,
+                User = user
+            };
+            _context.Orders.Add(order);
+            await _context.SaveChangesAsync();
+            return dto;
+        }
         #endregion
 
-
-
         #region -- Get the order of the customer --
+        public async Task<List<GetOrdersDTO>> GetOrder(int userId)
+        {
+            var orders = await _context.Orders
+                .Where(o => o.UserId == userId)
+                .Select(o => new GetOrdersDTO
+                {
+                    OrderId = o.Id,
+                    DateOrder = o.CreatedDate,
+                    Status = o.IsDelivered,
+                    Packages = _context.FoodPackages
+                        .Where(fp => fp.FoodPackageId == o.FoodPackageId)
+                        .Select(fp => new GetPackagesDTO
+                        {
+                            Id = fp.FoodPackageId,
+                            PackageName = fp.PackageName,
+                            PackageDescription = fp.PackageDescription,
+                            PackagePrice = fp.PackagePrice
+                        }).ToList(),
+                    Foods = _context.Foods
+                        .Where(f => f.FoodsId == o.FoodId)
+                        .Select(f => new FoodsDTO
+                        {
+                            FoodID = f.FoodsId,
+                            FoodName = f.FoodName,
+                            FoodDescription = f.FoodDescription,
+                            FoodPrice = f.FoodPrice,
+                            CategoryId = f.FoodCategoriesId
+                        }).ToList()
+                }).ToListAsync();
+            return orders;
+        }
+        #endregion
+
+        #region -- Place Order --
         #endregion
 
 
